@@ -230,11 +230,13 @@ static NSString *callOutCLickedChannelName = @"me.yohom/callOut_clicked";
             [callOutView setStoreName:options.storeName.length ? options.storeName : @"" distance:options.distance.length ? options.distance : @""];
             __weak __typeof__(self) weakSelf = self;
             [callOutView setClickCloseBtnBlock:^{
-                __typeof__(self) strongSelf = weakSelf;
                 
             }];
+            __weak __typeof__(annotation) weakAnno = annotation;
             [callOutView setClickOrderBtnBlock:^{
                 __typeof__(self) strongSelf = weakSelf;
+                __typeof__(annotation) strongAnno = weakAnno;
+                [strongSelf->_mapView deselectAnnotation:strongAnno animated:YES];
                 strongSelf->_callOutEventHandle.sink([options mj_JSONString]);
             }];
             annotationView.customCalloutView = [[MACustomCalloutView alloc] initWithCustomView:callOutView];
