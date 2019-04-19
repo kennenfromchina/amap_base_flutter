@@ -1,0 +1,187 @@
+//
+//  CustomCallOutView.m
+//  amap_base
+//
+//  Created by kennen on 2019/4/19.
+//
+
+#import "CustomCallOutView.h"
+
+#define ssRGBHex(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+#define ssRGBHexAlpha(rgbValue,a) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:(a)]
+
+/// 箭头高度
+#define kArrowHeight    (10.f)
+
+@interface CustomCallOutView ()
+
+/// 背景
+@property (nonatomic, strong) UIView *backView;
+/// 关闭按钮
+@property (nonatomic, strong) UIButton *closeBtn;
+/// 店名
+@property (nonatomic, strong) UILabel *storeName;
+/// 距离
+@property (nonatomic, strong) UILabel *distance;
+/// 预约按钮
+@property (nonatomic, strong) UIButton *orderBtn;
+
+@end
+
+@implementation CustomCallOutView
+
+- (void)setStoreName:(NSString *)storeName distance:(NSString *)distance {
+    self.storeName.text = storeName;
+    self.distance.text = distance;
+    CGRect oldFrame = self.storeName.frame;
+    [self.storeName sizeToFit];
+    CGRect newFrame = self.storeName.frame;
+    self.storeName.frame = CGRectMake(oldFrame.origin.x, oldFrame.origin.y, oldFrame.size.width, newFrame.size.height <= oldFrame.size.height ? newFrame.size.height : oldFrame.size.height);
+}
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        self.backgroundColor = UIColor.clearColor;
+        [self createSubviews];
+    }
+    return self;
+}
+
+- (void)createSubviews {
+    [self addSubview:self.backView];
+    [self.backView addSubview:self.storeName];
+    [self.backView addSubview:self.distance];
+    [self.backView addSubview:self.orderBtn];
+    [self addSubview:self.closeBtn];
+    [self setupViewByCAShapeLayer];
+}
+
+- (void)setupViewByCAShapeLayer {
+    CAShapeLayer *triangleLayer = [[CAShapeLayer alloc] init];
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    [path moveToPoint:CGPointMake(CGRectGetWidth(self.backView.frame) / 2.f - 4.f, CGRectGetMaxY(self.backView.frame))];
+    [path addLineToPoint:CGPointMake(CGRectGetWidth(self.backView.frame) / 2.f + 4.f, CGRectGetMaxY(self.backView.frame))];
+    [path addLineToPoint:CGPointMake(CGRectGetWidth(self.backView.frame) / 2.f, CGRectGetMaxY(self.backView.frame) + 10.f)];
+    [triangleLayer setPath:path.CGPath];
+    [self.layer addSublayer:triangleLayer];
+    triangleLayer.zPosition = 1000.f;
+    [triangleLayer setFillColor:UIColor.whiteColor.CGColor];
+}
+
+- (UIView *)backView {
+    if (!_backView) {
+        _backView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height - 10.f)];
+        _backView.backgroundColor = [UIColor whiteColor];
+        _backView.layer.borderColor = ssRGBHex(0xE2E2E2).CGColor;
+        _backView.layer.borderWidth = 0.5f;
+        _backView.layer.cornerRadius = 4.f;
+        _backView.layer.masksToBounds = YES;
+    }
+    return _backView;
+}
+
+- (UIButton *)closeBtn {
+    if (!_closeBtn) {
+        _closeBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
+        _closeBtn.frame = CGRectMake(0, 0, 24.f, 24.f);
+        _closeBtn.center = self.backView.frame.origin;
+        _closeBtn.tag = 1001;
+        _closeBtn.backgroundColor = UIColor.orangeColor;
+        [_orderBtn addTarget:self action:@selector(clickBtn:) forControlEvents:(UIControlEventTouchUpInside)];
+    }
+    return _closeBtn;
+}
+
+- (UIButton *)orderBtn {
+    if (!_orderBtn) {
+        _orderBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
+        _orderBtn.frame = CGRectMake(self.backView.bounds.size.width - 70.f, 0, 70.f, 86.f);
+        _orderBtn.backgroundColor = ssRGBHex(0xF3432A);
+        [_orderBtn setTitle:@"预约" forState:(UIControlStateNormal)];
+        [_orderBtn setTitleColor:UIColor.whiteColor forState:(UIControlStateNormal)];
+        _orderBtn.titleLabel.font = [UIFont systemFontOfSize:17.f];
+        [_orderBtn addTarget:self action:@selector(clickBtn:) forControlEvents:(UIControlEventTouchUpInside)];
+        _orderBtn.tag = 1000;
+    }
+    return _orderBtn;
+}
+
+- (void)clickBtn:(UIButton *)btn {
+    switch (btn.tag) {
+        case 1000: {
+            if (self.clickOrderBtnBlock) {
+                self.clickOrderBtnBlock();
+            }
+            break;
+        }
+        case 1001: {
+            if (self.clickCloseBtnBlock) {
+                self.clickCloseBtnBlock();
+            }
+            break;
+        }
+            
+        default:
+            break;
+    }
+}
+
+- (UILabel *)storeName {
+    if (!_storeName) {
+        _storeName = [[UILabel alloc] initWithFrame:CGRectMake(16.f, 8.f, _backView.bounds.size.width - 16.f * 2 - 70.f, 50.f)];
+        _storeName.textColor = ssRGBHex(0x333333);
+        _storeName.numberOfLines = 2;
+        _storeName.text = @"杭州中策车空间下沙旗舰店";
+    }
+    return _storeName;
+}
+
+- (UILabel *)distance {
+    if (!_distance) {
+        _distance = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMinX(self.storeName.frame), CGRectGetMaxY(self.backView.frame) - 8.f - 20.f, CGRectGetWidth(self.storeName.frame), 20.f)];
+        _distance.textColor = ssRGBHex(0x666666);
+        _distance.text = @"1.7km";
+    }
+    return _distance;
+}
+
+#pragma mark - 绘制
+
+/*
+- (void)drawRect:(CGRect)rect {
+    [self drawInContext:UIGraphicsGetCurrentContext()];
+    self.layer.shadowColor = [UIColor whiteColor].CGColor;
+    self.layer.shadowOpacity = 0.7;
+    self.layer.shadowOffset = CGSizeMake(3.0f, 3.0f);
+}
+
+- (void)drawInContext:(CGContextRef)context {
+    CGContextSetLineWidth(context, 0.5f);
+    CGContextSetFillColorWithColor(context, [UIColor.whiteColor colorWithAlphaComponent:0.8f].CGColor);
+    [self getDrawPath:context];
+    CGContextFillPath(context);
+}
+
+- (void)getDrawPath:(CGContextRef)context {
+    CGRect rect = self.bounds;
+    CGFloat radius = 4.f;
+    CGFloat minX = CGRectGetMinX(rect);
+    CGFloat midX = CGRectGetMidX(rect);
+    CGFloat maxX = CGRectGetMaxX(rect);
+    CGFloat minY = CGRectGetMinY(rect);
+    CGFloat maxY = CGRectGetMaxY(rect) - kArrowHeight;
+    
+    CGContextAddLineToPoint(context, midX + kArrowHeight / 2.f, maxY);
+    CGContextAddLineToPoint(context, midX, maxY + kArrowHeight);
+    CGContextMoveToPoint(context, midX - kArrowHeight / 2.f, maxY);
+    
+    CGContextAddArcToPoint(context, minX, maxY, minX, minY, radius);
+    CGContextAddArcToPoint(context, minX, minX, maxX, minY, radius);
+    CGContextAddArcToPoint(context, maxX, minY, maxX, maxX, radius);
+    CGContextAddArcToPoint(context, maxX, maxY, midX, maxY, radius);
+    
+    CGContextClosePath(context);
+}
+ */
+
+@end

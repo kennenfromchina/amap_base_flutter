@@ -127,6 +127,24 @@
 /// 显示在默认弹出框右侧的view [暂未实现]
 @property(nonatomic) NSString *rightCalloutAccessoryView;
 
+/*
+ /// 自定制弹出框iOS
+ bool hasCustomCallOutView;
+ 
+ /// 弹出框店名
+ String storeName;
+ 
+ /// 距离
+ String distance;
+ */
+
+/// 自定制弹出框iOS
+@property(nonatomic) BOOL hasCustomCallOutView;
+/// 弹出框店名
+@property(nonatomic) NSString *storeName;
+/// 距离
+@property(nonatomic) NSString *distance;
+
 - (NSString *)description;
 
 @end

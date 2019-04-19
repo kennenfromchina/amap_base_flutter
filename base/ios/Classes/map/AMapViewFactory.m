@@ -12,8 +12,30 @@
 #import "FunctionRegistry.h"
 #import "MapHandlers.h"
 
+#import "CustomCallOutView.h"
+
 static NSString *mapChannelName = @"me.yohom/map";
 static NSString *markerClickedChannelName = @"me.yohom/marker_clicked";
+
+static NSString *callOutCLickedChannelName = @"me.yohom/callOut_clicked";
+
+@interface CallOutEventHandler : NSObject<FlutterStreamHandler>
+@property(nonatomic) FlutterEventSink sink;
+@end
+
+@implementation CallOutEventHandler
+
+- (FlutterError *_Nullable)onListenWithArguments:(id _Nullable)arguments
+                                       eventSink:(FlutterEventSink)events {
+    _sink = events;
+    return nil;
+}
+
+- (FlutterError *_Nullable)onCancelWithArguments:(id _Nullable)arguments {
+    return nil;
+}
+
+@end
 
 @interface MarkerEventHandler : NSObject <FlutterStreamHandler>
 @property(nonatomic) FlutterEventSink sink;
@@ -61,6 +83,9 @@ static NSString *markerClickedChannelName = @"me.yohom/marker_clicked";
   FlutterEventChannel *_markerClickedEventChannel;
   MAMapView *_mapView;
   MarkerEventHandler *_eventHandler;
+    
+  FlutterEventChannel *_callOutClickedEventChannel;
+  CallOutEventHandler *_callOutEventHandle;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -128,6 +153,10 @@ static NSString *markerClickedChannelName = @"me.yohom/marker_clicked";
   _markerClickedEventChannel = [FlutterEventChannel eventChannelWithName:[NSString stringWithFormat:@"%@%lld", markerClickedChannelName, _viewId]
                                                          binaryMessenger:[AMapBasePlugin registrar].messenger];
   [_markerClickedEventChannel setStreamHandler:_eventHandler];
+    
+    _callOutEventHandle = [[CallOutEventHandler alloc] init];
+    _callOutClickedEventChannel = [FlutterEventChannel eventChannelWithName:[NSString stringWithFormat:@"%@%lld", callOutCLickedChannelName, _viewId] binaryMessenger:[AMapBasePlugin registrar].messenger];
+    [_callOutClickedEventChannel setStreamHandler:_callOutEventHandle];
 }
 
 #pragma MAMapViewDelegate
@@ -196,6 +225,20 @@ static NSString *markerClickedChannelName = @"me.yohom/marker_clicked";
       annotationView.enabled = options.enabled;
       annotationView.highlighted = options.highlighted;
       annotationView.selected = options.selected;
+        if (options.hasCustomCallOutView) {
+            CustomCallOutView *callOutView = [[CustomCallOutView alloc] initWithFrame:CGRectMake(0, 0, 244.f, 96.f)];
+            [callOutView setStoreName:options.storeName.length ? options.storeName : @"" distance:options.distance.length ? options.distance : @""];
+            __weak __typeof__(self) weakSelf = self;
+            [callOutView setClickCloseBtnBlock:^{
+                __typeof__(self) strongSelf = weakSelf;
+                
+            }];
+            [callOutView setClickOrderBtnBlock:^{
+                __typeof__(self) strongSelf = weakSelf;
+                strongSelf->_callOutEventHandle.sink([options mj_JSONString]);
+            }];
+            annotationView.customCalloutView = [[MACustomCalloutView alloc] initWithCustomView:callOutView];
+        }
     } else {
       if ([[annotation title] isEqualToString:@"起点"]) {
         annotationView.image = [UIImage imageWithContentsOfFile:[UnifiedAssets getDefaultAssetPath:@"images/amap_start.png"]];

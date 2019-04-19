@@ -40,6 +40,9 @@ class DrawPointScreenState extends State<DrawPointScreen> {
                 Scaffold.of(context)
                     .showSnackBar(SnackBar(content: Text(marker.toString())));
               });
+              _controller.callOutClickedEvent.listen((marker) {
+                print('点击预约按钮');
+              });
               controller.addMarkers(
                 markerList
                     .map((latLng) => MarkerOptions(
@@ -47,6 +50,9 @@ class DrawPointScreenState extends State<DrawPointScreen> {
                           position: latLng,
                           title: '哈哈',
                           snippet: '呵呵',
+                          hasCustomCallOutView: true,
+                          storeName: 'ceshi',
+                          distance: '15km',
                         ))
                     .toList(),
               );

@@ -77,6 +77,15 @@ class MarkerOptions {
   /// 自定制弹出框view, 用于替换默认弹出框. [iOS暂未实现]
   String customCalloutView;
 
+  /// 自定制弹出框iOS
+  bool hasCustomCallOutView;
+
+  /// 弹出框店名
+  String storeName;
+
+  /// 距离
+  String distance;
+
   /// 默认为YES,当为NO时view忽略触摸事件 [iOS]
   bool enabled;
 
@@ -122,6 +131,11 @@ class MarkerOptions {
     this.selected = false,
     this.leftCalloutAccessoryView,
     this.rightCalloutAccessoryView,
+
+    ///新增
+    this.hasCustomCallOutView = false,
+    this.storeName,
+    this.distance,
   });
 
   MarkerOptions.fromJson(Map<String, Object> json) {
@@ -147,6 +161,11 @@ class MarkerOptions {
     title = json['title'] as String;
     visible = json['visible'] as bool;
     zIndex = json['zIndex'] as num;
+
+    ///新增
+    hasCustomCallOutView = json['hasCustomCallOutView'] as bool;
+    storeName = json['storeName'] as String;
+    distance = json['distance'] as String;
   }
 
   Map<String, Object> toJson() {
@@ -180,6 +199,11 @@ class MarkerOptions {
       'selected': selected,
       'leftCalloutAccessoryView': leftCalloutAccessoryView,
       'rightCalloutAccessoryView': rightCalloutAccessoryView,
+
+      /// 新增
+      'hasCustomCallOutView': hasCustomCallOutView,
+      'storeName': storeName,
+      'distance': distance,
     };
   }
 
@@ -218,7 +242,10 @@ class MarkerOptions {
           highlighted == other.highlighted &&
           selected == other.selected &&
           leftCalloutAccessoryView == other.leftCalloutAccessoryView &&
-          rightCalloutAccessoryView == other.rightCalloutAccessoryView;
+          rightCalloutAccessoryView == other.rightCalloutAccessoryView &&
+          hasCustomCallOutView == other.hasCustomCallOutView &&
+          storeName == other.storeName &&
+          distance == other.distance;
 
   @override
   int get hashCode =>
@@ -250,10 +277,13 @@ class MarkerOptions {
       highlighted.hashCode ^
       selected.hashCode ^
       leftCalloutAccessoryView.hashCode ^
-      rightCalloutAccessoryView.hashCode;
+      rightCalloutAccessoryView.hashCode ^
+      hasCustomCallOutView.hashCode ^
+      storeName.hashCode ^
+      distance.hashCode;
 
   @override
   String toString() {
-    return 'MarkerOptions{icon: $icon, icons: $icons, alpha: $alpha, anchorU: $anchorU, anchorV: $anchorV, draggable: $draggable, infoWindowEnable: $infoWindowEnable, period: $period, position: $position, rotateAngle: $rotateAngle, isFlat: $isFlat, isGps: $isGps, infoWindowOffsetX: $infoWindowOffsetX, infoWindowOffsetY: $infoWindowOffsetY, snippet: $snippet, title: $title, visible: $visible, autoOverturnInfoWindow: $autoOverturnInfoWindow, zIndex: $zIndex, displayLevel: $displayLevel, belowMaskLayer: $belowMaskLayer, lockedToScreen: $lockedToScreen, lockedScreenPoint: $lockedScreenPoint, customCalloutView: $customCalloutView, enabled: $enabled, highlighted: $highlighted, selected: $selected, leftCalloutAccessoryView: $leftCalloutAccessoryView, rightCalloutAccessoryView: $rightCalloutAccessoryView}';
+    return 'MarkerOptions{icon: $icon, icons: $icons, alpha: $alpha, anchorU: $anchorU, anchorV: $anchorV, draggable: $draggable, infoWindowEnable: $infoWindowEnable, period: $period, position: $position, rotateAngle: $rotateAngle, isFlat: $isFlat, isGps: $isGps, infoWindowOffsetX: $infoWindowOffsetX, infoWindowOffsetY: $infoWindowOffsetY, snippet: $snippet, title: $title, visible: $visible, autoOverturnInfoWindow: $autoOverturnInfoWindow, zIndex: $zIndex, displayLevel: $displayLevel, belowMaskLayer: $belowMaskLayer, lockedToScreen: $lockedToScreen, lockedScreenPoint: $lockedScreenPoint, customCalloutView: $customCalloutView, enabled: $enabled, highlighted: $highlighted, selected: $selected, leftCalloutAccessoryView: $leftCalloutAccessoryView, rightCalloutAccessoryView: $rightCalloutAccessoryView, hasCustomCallOutView: $hasCustomCallOutView, storeName:$storeName, distance:$distance}';
   }
 }

@@ -15,9 +15,12 @@ import 'package:meta/meta.dart';
 class AMapController {
   final MethodChannel _mapChannel;
   final EventChannel _markerClickedEventChannel;
+  final EventChannel _callOutClickedEventChannel;
 
   AMapController.withId(int id)
       : _mapChannel = MethodChannel('me.yohom/map$id'),
+        _callOutClickedEventChannel =
+            EventChannel('me.yohom/callOut_clicked$id'),
         _markerClickedEventChannel = EventChannel('me.yohom/marker_clicked$id');
 
   void dispose() {}
@@ -261,6 +264,11 @@ class AMapController {
 
   /// marker点击事件流
   Stream<MarkerOptions> get markerClickedEvent => _markerClickedEventChannel
+      .receiveBroadcastStream()
+      .map((data) => MarkerOptions.fromJson(jsonDecode(data)));
+
+  /// callout点击事件流
+  Stream<MarkerOptions> get callOutClickedEvent => _callOutClickedEventChannel
       .receiveBroadcastStream()
       .map((data) => MarkerOptions.fromJson(jsonDecode(data)));
 }
