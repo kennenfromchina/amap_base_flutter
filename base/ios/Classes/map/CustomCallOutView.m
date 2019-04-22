@@ -12,6 +12,7 @@
 
 /// 箭头高度
 #define kArrowHeight    (10.f)
+#define kRadius         (4.f)
 
 @interface CustomCallOutView ()
 
@@ -53,28 +54,12 @@
     [self.backView addSubview:self.distance];
     [self.backView addSubview:self.orderBtn];
     [self addSubview:self.closeBtn];
-    [self setupViewByCAShapeLayer];
-}
-
-- (void)setupViewByCAShapeLayer {
-    CAShapeLayer *triangleLayer = [[CAShapeLayer alloc] init];
-    UIBezierPath *path = [UIBezierPath bezierPath];
-    [path moveToPoint:CGPointMake(CGRectGetWidth(self.backView.frame) / 2.f - 4.f, CGRectGetMaxY(self.backView.frame))];
-    [path addLineToPoint:CGPointMake(CGRectGetWidth(self.backView.frame) / 2.f + 4.f, CGRectGetMaxY(self.backView.frame))];
-    [path addLineToPoint:CGPointMake(CGRectGetWidth(self.backView.frame) / 2.f, CGRectGetMaxY(self.backView.frame) + 10.f)];
-    [triangleLayer setPath:path.CGPath];
-    [self.layer addSublayer:triangleLayer];
-    triangleLayer.zPosition = 1000.f;
-    [triangleLayer setFillColor:UIColor.whiteColor.CGColor];
 }
 
 - (UIView *)backView {
     if (!_backView) {
         _backView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height - 10.f)];
-        _backView.backgroundColor = [UIColor whiteColor];
-        _backView.layer.borderColor = ssRGBHex(0xE2E2E2).CGColor;
-        _backView.layer.borderWidth = 0.5f;
-        _backView.layer.cornerRadius = 4.f;
+        _backView.layer.cornerRadius = kRadius;
         _backView.layer.masksToBounds = YES;
     }
     return _backView;
@@ -87,7 +72,7 @@
         _closeBtn.center = self.backView.frame.origin;
         _closeBtn.tag = 1001;
         _closeBtn.backgroundColor = UIColor.orangeColor;
-        [_orderBtn addTarget:self action:@selector(clickBtn:) forControlEvents:(UIControlEventTouchUpInside)];
+        [_closeBtn addTarget:self action:@selector(clickBtn:) forControlEvents:(UIControlEventTouchUpInside)];
     }
     return _closeBtn;
 }
@@ -147,41 +132,51 @@
 
 #pragma mark - 绘制
 
-/*
-- (void)drawRect:(CGRect)rect {
+//1.这个是callout背景颜色
+- (void)drawRect:(CGRect)rect{
     [self drawInContext:UIGraphicsGetCurrentContext()];
-    self.layer.shadowColor = [UIColor whiteColor].CGColor;
-    self.layer.shadowOpacity = 0.7;
-    self.layer.shadowOffset = CGSizeMake(3.0f, 3.0f);
+//    self.layer.shadowColor = [UIColor whiteColor].CGColor;
+//    self.layer.shadowOpacity = 0.7;
+//    self.layer.shadowOffset = CGSizeMake(3.0f, 3.0f);
+    
 }
-
-- (void)drawInContext:(CGContextRef)context {
-    CGContextSetLineWidth(context, 0.5f);
-    CGContextSetFillColorWithColor(context, [UIColor.whiteColor colorWithAlphaComponent:0.8f].CGColor);
+//callout填充
+- (void)drawInContext:(CGContextRef)context{
+    CGContextSetLineWidth(context, 2.0);
+    CGContextSetFillColorWithColor(context, [UIColor colorWithWhite:1.0 alpha:1.0].CGColor);
+    
     [self getDrawPath:context];
     CGContextFillPath(context);
 }
-
+//划线路径
 - (void)getDrawPath:(CGContextRef)context {
     CGRect rect = self.bounds;
-    CGFloat radius = 4.f;
     CGFloat minX = CGRectGetMinX(rect);
-    CGFloat midX = CGRectGetMidX(rect);
     CGFloat maxX = CGRectGetMaxX(rect);
+    CGFloat midX = CGRectGetMidX(rect);
     CGFloat minY = CGRectGetMinY(rect);
     CGFloat maxY = CGRectGetMaxY(rect) - kArrowHeight;
     
-    CGContextAddLineToPoint(context, midX + kArrowHeight / 2.f, maxY);
-    CGContextAddLineToPoint(context, midX, maxY + kArrowHeight);
+    //箭头
+    //左
     CGContextMoveToPoint(context, midX - kArrowHeight / 2.f, maxY);
+    //下
+    CGContextAddLineToPoint(context, midX, maxY + kArrowHeight);
+    //右
+    CGContextAddLineToPoint(context, midX + kArrowHeight / 2.f, maxY);
     
-    CGContextAddArcToPoint(context, minX, maxY, minX, minY, radius);
-    CGContextAddArcToPoint(context, minX, minX, maxX, minY, radius);
-    CGContextAddArcToPoint(context, maxX, minY, maxX, maxX, radius);
-    CGContextAddArcToPoint(context, maxX, maxY, midX, maxY, radius);
+    //圆弧
+    //右下
+    CGContextAddArcToPoint(context, maxX, maxY, maxX, minY, kRadius);
+    //右上
+    CGContextAddArcToPoint(context, maxX, minY, minX, minY, kRadius);
+    //左上
+    CGContextAddArcToPoint(context, minX, minY, minX, maxY, kRadius);
+    //左下
+    CGContextAddArcToPoint(context, minX, maxY, midX, maxY, kRadius);
     
+    //封闭
     CGContextClosePath(context);
 }
- */
 
 @end

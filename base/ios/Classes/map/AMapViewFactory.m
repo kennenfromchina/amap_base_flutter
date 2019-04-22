@@ -229,14 +229,18 @@ static NSString *callOutCLickedChannelName = @"me.yohom/callOut_clicked";
             CustomCallOutView *callOutView = [[CustomCallOutView alloc] initWithFrame:CGRectMake(0, 0, 244.f, 96.f)];
             [callOutView setStoreName:options.storeName.length ? options.storeName : @"" distance:options.distance.length ? options.distance : @""];
             __weak __typeof__(self) weakSelf = self;
-            [callOutView setClickCloseBtnBlock:^{
-                
-            }];
             __weak __typeof__(annotation) weakAnno = annotation;
-            [callOutView setClickOrderBtnBlock:^{
-                __typeof__(self) strongSelf = weakSelf;
-                __typeof__(annotation) strongAnno = weakAnno;
+            [callOutView setClickCloseBtnBlock:^{
+                __strong __typeof__(self) strongSelf = weakSelf;
+                __strong __typeof__(annotation) strongAnno = weakAnno;
                 [strongSelf->_mapView deselectAnnotation:strongAnno animated:YES];
+            }];
+            [callOutView setClickOrderBtnBlock:^{
+                __strong __typeof__(self) strongSelf = weakSelf;
+                __strong __typeof__(annotation) strongAnno = weakAnno;
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [strongSelf->_mapView deselectAnnotation:strongAnno animated:YES];
+                });
                 strongSelf->_callOutEventHandle.sink([options mj_JSONString]);
             }];
             annotationView.customCalloutView = [[MACustomCalloutView alloc] initWithCustomView:callOutView];
