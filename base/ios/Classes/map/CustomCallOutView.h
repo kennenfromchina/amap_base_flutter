@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CustomCallOutView : UIView
 
-@property (nonatomic, copy) RRCallBackBlock clickCloseBtnBlock;
+//@property (nonatomic, copy) RRCallBackBlock clickCloseBtnBlock;
 @property (nonatomic, copy) RRCallBackBlock clickOrderBtnBlock;
 
 - (void)setStoreName:(NSString *)storeName distance:(NSString *)distance;

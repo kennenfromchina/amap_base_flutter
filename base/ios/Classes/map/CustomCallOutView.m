@@ -6,6 +6,7 @@
 //
 
 #import "CustomCallOutView.h"
+#import "UnifiedAssets.h"
 
 #define ssRGBHex(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 #define ssRGBHexAlpha(rgbValue,a) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:(a)]
@@ -19,7 +20,7 @@
 /// 背景
 @property (nonatomic, strong) UIView *backView;
 /// 关闭按钮
-@property (nonatomic, strong) UIButton *closeBtn;
+//@property (nonatomic, strong) UIButton *closeBtn;
 /// 店名
 @property (nonatomic, strong) UILabel *storeName;
 /// 距离
@@ -53,7 +54,7 @@
     [self.backView addSubview:self.storeName];
     [self.backView addSubview:self.distance];
     [self.backView addSubview:self.orderBtn];
-    [self addSubview:self.closeBtn];
+//    [self addSubview:self.closeBtn];
 }
 
 - (UIView *)backView {
@@ -64,19 +65,19 @@
     }
     return _backView;
 }
-
+/*
 - (UIButton *)closeBtn {
     if (!_closeBtn) {
         _closeBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
         _closeBtn.frame = CGRectMake(0, 0, 24.f, 24.f);
         _closeBtn.center = self.backView.frame.origin;
         _closeBtn.tag = 1001;
-        _closeBtn.backgroundColor = UIColor.orangeColor;
+        [_closeBtn setImage:[UIImage imageWithContentsOfFile:[UnifiedAssets getDefaultAssetPath:@"images/close_btn.png"]] forState:UIControlStateNormal];
         [_closeBtn addTarget:self action:@selector(clickBtn:) forControlEvents:(UIControlEventTouchUpInside)];
     }
     return _closeBtn;
 }
-
+*/
 - (UIButton *)orderBtn {
     if (!_orderBtn) {
         _orderBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
@@ -99,12 +100,14 @@
             }
             break;
         }
+            /*
         case 1001: {
             if (self.clickCloseBtnBlock) {
                 self.clickCloseBtnBlock();
             }
             break;
         }
+             */
             
         default:
             break;
