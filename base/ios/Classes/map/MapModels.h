@@ -144,6 +144,8 @@
 @property(nonatomic) NSString *storeName;
 /// 距离
 @property(nonatomic) NSString *distance;
+/// 门店id
+@property(nonatomic) NSInteger storeId;
 
 - (NSString *)description;
 

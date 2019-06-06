@@ -86,6 +86,9 @@ class MarkerOptions {
   /// 距离
   String distance;
 
+  /// 门店id
+  int storeId;
+
   /// 默认为YES,当为NO时view忽略触摸事件 [iOS]
   bool enabled;
 
@@ -136,6 +139,7 @@ class MarkerOptions {
     this.hasCustomCallOutView = false,
     this.storeName,
     this.distance,
+    this.storeId,
   });
 
   MarkerOptions.fromJson(Map<String, Object> json) {
@@ -166,6 +170,7 @@ class MarkerOptions {
     hasCustomCallOutView = json['hasCustomCallOutView'] as bool;
     storeName = json['storeName'] as String;
     distance = json['distance'] as String;
+    storeId = json['storeId'] as int;
   }
 
   Map<String, Object> toJson() {
@@ -204,6 +209,7 @@ class MarkerOptions {
       'hasCustomCallOutView': hasCustomCallOutView,
       'storeName': storeName,
       'distance': distance,
+      'storeId': storeId,
     };
   }
 
@@ -245,7 +251,8 @@ class MarkerOptions {
           rightCalloutAccessoryView == other.rightCalloutAccessoryView &&
           hasCustomCallOutView == other.hasCustomCallOutView &&
           storeName == other.storeName &&
-          distance == other.distance;
+          distance == other.distance &&
+          storeId == other.storeId;
 
   @override
   int get hashCode =>
@@ -280,10 +287,11 @@ class MarkerOptions {
       rightCalloutAccessoryView.hashCode ^
       hasCustomCallOutView.hashCode ^
       storeName.hashCode ^
-      distance.hashCode;
+      distance.hashCode ^
+      storeId.hashCode;
 
   @override
   String toString() {
-    return 'MarkerOptions{icon: $icon, icons: $icons, alpha: $alpha, anchorU: $anchorU, anchorV: $anchorV, draggable: $draggable, infoWindowEnable: $infoWindowEnable, period: $period, position: $position, rotateAngle: $rotateAngle, isFlat: $isFlat, isGps: $isGps, infoWindowOffsetX: $infoWindowOffsetX, infoWindowOffsetY: $infoWindowOffsetY, snippet: $snippet, title: $title, visible: $visible, autoOverturnInfoWindow: $autoOverturnInfoWindow, zIndex: $zIndex, displayLevel: $displayLevel, belowMaskLayer: $belowMaskLayer, lockedToScreen: $lockedToScreen, lockedScreenPoint: $lockedScreenPoint, customCalloutView: $customCalloutView, enabled: $enabled, highlighted: $highlighted, selected: $selected, leftCalloutAccessoryView: $leftCalloutAccessoryView, rightCalloutAccessoryView: $rightCalloutAccessoryView, hasCustomCallOutView: $hasCustomCallOutView, storeName:$storeName, distance:$distance}';
+    return 'MarkerOptions{icon: $icon, icons: $icons, alpha: $alpha, anchorU: $anchorU, anchorV: $anchorV, draggable: $draggable, infoWindowEnable: $infoWindowEnable, period: $period, position: $position, rotateAngle: $rotateAngle, isFlat: $isFlat, isGps: $isGps, infoWindowOffsetX: $infoWindowOffsetX, infoWindowOffsetY: $infoWindowOffsetY, snippet: $snippet, title: $title, visible: $visible, autoOverturnInfoWindow: $autoOverturnInfoWindow, zIndex: $zIndex, displayLevel: $displayLevel, belowMaskLayer: $belowMaskLayer, lockedToScreen: $lockedToScreen, lockedScreenPoint: $lockedScreenPoint, customCalloutView: $customCalloutView, enabled: $enabled, highlighted: $highlighted, selected: $selected, leftCalloutAccessoryView: $leftCalloutAccessoryView, rightCalloutAccessoryView: $rightCalloutAccessoryView, hasCustomCallOutView: $hasCustomCallOutView, storeName:$storeName, distance:$distance, storeId:$storeId}';
   }
 }
